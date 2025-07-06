@@ -191,46 +191,207 @@ const SpeedTestApp = () => {
   };
 
   // Optimized ping test
-  const runPingTest = async () => {
-    setCurrentTest('ping');
-    setProgress(0);
+//   const runPingTest = async () => {
+//     setCurrentTest('ping');
+//     setProgress(0);
     
-    try {
-      abortControllerRef.current = new AbortController();
+//     try {
+//       abortControllerRef.current = new AbortController();
       
-      const response = await fetch(`${API_BASE}/api/jitter?count=8&interval=125`, {
-        method: 'GET',
-        cache: 'no-store',
-        signal: abortControllerRef.current.signal
-      });
+//       const response = await fetch(`${API_BASE}/api/jitter?count=8&interval=125`, {
+//         method: 'GET',
+//         cache: 'no-store',
+//         signal: abortControllerRef.current.signal
+//       });
       
-      if (!response.ok) throw new Error('Jitter test failed');
+//       if (!response.ok) throw new Error('Jitter test failed');
       
-      const data = await response.json();
+//       const data = await response.json();
       
-      if (data.statistics && data.statistics.rtt) {
-        const avgPing = parseFloat(data.statistics.rtt.average);
-        const jitter = parseFloat(data.statistics.rtt.jitter);
-        const measurements = data.measurements || [];
+//       if (data.statistics && data.statistics.rtt) {
+//         const avgPing = parseFloat(data.statistics.rtt.average);
+//         const jitter = parseFloat(data.statistics.rtt.jitter);
+//         const measurements = data.measurements || [];
         
-        setResults(prev => ({ 
-          ...prev, 
-          ping: avgPing, 
-          jitter,
-          latency: measurements.map(m => m.roundTripTime)
-        }));
-        setProgress(100);
+//         setResults(prev => ({ 
+//           ...prev, 
+//           ping: avgPing, 
+//           jitter,
+//           latency: measurements.map(m => m.roundTripTime)
+//         }));
+//         setProgress(100);
+//       }
+      
+//     } catch (error) {
+//       if (error.name !== 'AbortError') {
+//         console.error('Ping test failed:', error);
+//         // Fallback with fewer pings
+//         await runFallbackPingTest();
+//       }
+//     }
+//   };
+
+// Corrected ping test that measures actual network round trip time
+const runPingTest = async () => {
+  setCurrentTest('ping');
+  setProgress(0);
+  
+  try {
+    abortControllerRef.current = new AbortController();
+    
+    console.log('Starting client-side ping test...');
+    const pings = [];
+    const pingCount = 10;
+    
+    for (let i = 0; i < pingCount; i++) {
+      const startTime = performance.now();
+      
+      try {
+        // Send timestamp to server and measure full round trip
+        const response = await fetch(`${API_BASE}/api/ping?t=${startTime}&seq=${i}`, {
+          method: 'GET',
+          cache: 'no-store',
+          signal: abortControllerRef.current.signal
+        });
+        
+        if (!response.ok) throw new Error(`Ping ${i} failed: ${response.status}`);
+        
+        // Read response to complete the round trip
+        const data = await response.json();
+        const endTime = performance.now();
+        
+        // Calculate actual round trip time
+        const roundTripTime = endTime - startTime;
+        pings.push(roundTripTime);
+        
+        console.log(`Ping ${i + 1}: ${roundTripTime.toFixed(1)}ms`);
+        
+        // Update progress
+        setProgress(((i + 1) / pingCount) * 100);
+        
+        // Update real-time display
+        if (i === 0) {
+          // Set initial values
+          setResults(prev => ({ ...prev, ping: roundTripTime, jitter: 0 }));
+        } else {
+          // Update running average
+          const avgPing = pings.reduce((a, b) => a + b, 0) / pings.length;
+          const maxPing = Math.max(...pings);
+          const minPing = Math.min(...pings);
+          const jitter = maxPing - minPing;
+          
+          setResults(prev => ({ 
+            ...prev, 
+            ping: avgPing, 
+            jitter: jitter,
+            latency: [...pings]
+          }));
+        }
+        
+      } catch (error) {
+        if (error.name === 'AbortError') break;
+        console.error(`Ping ${i + 1} failed:`, error);
       }
       
-    } catch (error) {
-      if (error.name !== 'AbortError') {
-        console.error('Ping test failed:', error);
-        // Fallback with fewer pings
-        await runFallbackPingTest();
+      // Wait between pings (avoid overwhelming server)
+      if (i < pingCount - 1) {
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
     }
-  };
+    
+    console.log('All pings completed:', pings);
+    
+    if (pings.length > 0) {
+      // Calculate final statistics
+      const avgPing = pings.reduce((a, b) => a + b, 0) / pings.length;
+      const maxPing = Math.max(...pings);
+      const minPing = Math.min(...pings);
+      const jitter = maxPing - minPing;
+      
+      // Calculate standard deviation for more accurate jitter
+      const variance = pings.reduce((sum, ping) => sum + Math.pow(ping - avgPing, 2), 0) / pings.length;
+      const stdDevJitter = Math.sqrt(variance);
+      
+      console.log('Final ping statistics:', {
+        average: avgPing.toFixed(1),
+        min: minPing.toFixed(1),
+        max: maxPing.toFixed(1),
+        jitter: jitter.toFixed(1),
+        stdDevJitter: stdDevJitter.toFixed(1)
+      });
+      
+      setResults(prev => ({ 
+        ...prev, 
+        ping: avgPing, 
+        jitter: jitter, // Using range for simpler jitter calculation
+        latency: pings 
+      }));
+    } else {
+      console.log('No successful pings recorded');
+      // Set default values if no pings succeeded
+      setResults(prev => ({ ...prev, ping: 0, jitter: 0, latency: [] }));
+    }
+    
+    setProgress(100);
+    
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      console.error('Ping test failed:', error);
+      setResults(prev => ({ ...prev, ping: 0, jitter: 0, latency: [] }));
+    }
+    setProgress(100);
+  }
+};
 
+// Alternative: Use the jitter endpoint if you want to keep the backend approach
+const runJitterEndpointTest = async () => {
+  setCurrentTest('ping');
+  setProgress(0);
+  
+  try {
+    abortControllerRef.current = new AbortController();
+    
+    console.log('Starting backend jitter test...');
+    const response = await fetch(`${API_BASE}/api/jitter?count=10&interval=100`, {
+      method: 'GET',
+      cache: 'no-store',
+      signal: abortControllerRef.current.signal
+    });
+    
+    console.log('Jitter response status:', response.status);
+    
+    if (!response.ok) throw new Error('Jitter test failed');
+    
+    const data = await response.json();
+    console.log('Jitter response data:', data);
+    
+    if (data.success && data.statistics && data.statistics.rtt) {
+      const avgPing = parseFloat(data.statistics.rtt.average);
+      const jitter = parseFloat(data.statistics.rtt.jitter);
+      const measurements = data.measurements || [];
+      
+      console.log('Parsed jitter values:', { avgPing, jitter });
+      
+      setResults(prev => ({ 
+        ...prev, 
+        ping: avgPing, 
+        jitter: jitter,
+        latency: measurements.map(m => m.roundTripTime)
+      }));
+      setProgress(100);
+    } else {
+      console.log('Invalid jitter response format');
+      throw new Error('Invalid response format');
+    }
+    
+  } catch (error) {
+    if (error.name !== 'AbortError') {
+      console.error('Jitter endpoint test failed:', error);
+      console.log('Falling back to client-side ping test...');
+      await runPingTest();
+    }
+  }
+};
   const runFallbackPingTest = async () => {
     const pings = [];
     for (let i = 0; i < 5; i++) { // Reduced from 10 to 5
