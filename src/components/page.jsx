@@ -16,10 +16,10 @@ const SpeedTestApp = () => {
   const [progress, setProgress] = useState(0);
   const [serverInfo, setServerInfo] = useState(null);
   const [testConfig, setTestConfig] = useState({
-    connections: 2, // Reduced default
+    connections: 1, // Reduced default
     progressive: true,
     warmup: true,
-    uploadSize: 5 // Default 5MB instead of going up to 25MB
+    uploadSize: 1 // Default 5MB instead of going up to 25MB
   });
   const [realTimeData, setRealTimeData] = useState([]);
   const [currentSpeed, setCurrentSpeed] = useState(0);
