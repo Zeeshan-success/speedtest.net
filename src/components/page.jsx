@@ -852,7 +852,6 @@ const runJitterEndpointTest = async () => {
             </div>
           </div>
         </div>
-            <div id="container-ad963ca5988e85713a41b39cb63d99a0"/>
 
         {/* Server and Connection Info */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
