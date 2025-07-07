@@ -29,6 +29,8 @@ export default function RootLayout({ children }) {
 
         <title>Speed Test</title>
 <script type='text/javascript' src='//pl27104063.profitableratecpm.com/1a/f9/aa/1af9aad165e25b82433d54595e72659e.js'></script>
+<script async="async" data-cfasync="false" src="//pl27104175.profitableratecpm.com/ad963ca5988e85713a41b39cb63d99a0/invoke.js"></script>
+<script type='text/javascript' src='//pl27104063.profitableratecpm.com/1a/f9/aa/1af9aad165e25b82433d54595e72659e.js'></script>
         {/* Google Analytics */}
         <script
           async
@@ -47,7 +49,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <div id="container-ad963ca5988e85713a41b39cb63d99a0">
+
         {children}
+        </div>
       </body>
     </html>
   );
