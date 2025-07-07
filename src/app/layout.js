@@ -28,7 +28,7 @@ export default function RootLayout({ children }) {
         <meta name="robots" content="index, follow" />
 
         <title>Speed Test</title>
-
+<script type='text/javascript' src='//pl27104063.profitableratecpm.com/1a/f9/aa/1af9aad165e25b82433d54595e72659e.js'></script>
         {/* Google Analytics */}
         <script
           async
