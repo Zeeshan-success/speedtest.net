@@ -66,7 +66,8 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div id="container-ad963ca5988e85713a41b39cb63d99a0">{children}</div>
+        
+          {children}
       </body>
     </html>
   );

@@ -914,7 +914,7 @@ const runJitterEndpointTest = async () => {
             </div>
 
             {/* Latency History */}
-            {results.latency.length > 0 && (
+            {/* {results.latency.length > 0 && (
             <div className="bg-white rounded-2xl shadow-xl p-6 mt-6">
                 <h3 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
                 <Clock className="mr-2" size={24} />
@@ -931,7 +931,10 @@ const runJitterEndpointTest = async () => {
                 ))}
                 </div>
             </div>
-            )}
+            )} */}
+            <div id="container-ad963ca5988e85713a41b39cb63d99a0"/>
+
+     
         </div>
         </div>
     );
