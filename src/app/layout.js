@@ -40,6 +40,7 @@ export default function RootLayout({ children }) {
           src="//pl27104175.profitableratecpm.com/ad963ca5988e85713a41b39cb63d99a0/invoke.js"
           strategy="afterInteractive"
         />
+      
         <Script
           src="https://fpyf8.com/88/tag.min.js"
           data-zone="155783"
