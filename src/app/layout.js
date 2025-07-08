@@ -29,29 +29,8 @@ export default function RootLayout({ children }) {
 
         <title>Speed Test</title>
 
-        {/* Adsterra & Other Ad Scripts */}
-        <Script
-          src="//pl27104063.profitableratecpm.com/1a/f9/aa/1af9aad165e25b82433d54595e72659e.js"
-          strategy="afterInteractive"
-        />
-        <Script
-          async
-          data-cfasync="false"
-          src="//pl27104175.profitableratecpm.com/ad963ca5988e85713a41b39cb63d99a0/invoke.js"
-          strategy="afterInteractive"
-        />
-      
-        <Script
-          src="https://fpyf8.com/88/tag.min.js"
-          data-zone="155783"
-          async
-          data-cfasync="false"
-          strategy="afterInteractive"
-        />
-        <Script
-          src="//pl27108278.profitableratecpm.com/3c/b1/48/3cb148206b9957707c11312340239933.js"
-          strategy="afterInteractive"
-        />
+    
+        
 
         {/* Google Analytics */}
         <Script
@@ -59,14 +38,7 @@ export default function RootLayout({ children }) {
           src="https://www.googletagmanager.com/gtag/js?id=G-5NY3DGDM0M"
           strategy="afterInteractive"
         />
-        <Script id="gtag-init" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-5NY3DGDM0M');
-          `}
-        </Script>
+      
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}

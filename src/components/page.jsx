@@ -680,7 +680,6 @@ const runJitterEndpointTest = async () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4">
-      <div id="container-ad963ca5988e85713a41b39cb63d99a0"></div>
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -933,7 +932,7 @@ const runJitterEndpointTest = async () => {
                 </div>
             </div>
             )} */}
-            <div id="container-ad963ca5988e85713a41b39cb63d99a0"/>
+            {/* <div id="container-ad963ca5988e85713a41b39cb63d99a0"/> */}
 
      
         </div>
