@@ -47,6 +47,10 @@ export default function RootLayout({ children }) {
           data-cfasync="false"
           strategy="afterInteractive"
         />
+        <Script
+          src="//pl27108278.profitableratecpm.com/3c/b1/48/3cb148206b9957707c11312340239933.js"
+          strategy="afterInteractive"
+        />
 
         {/* Google Analytics */}
         <Script
